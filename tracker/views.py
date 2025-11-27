@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-def dashboard(request):
+# views = handle requets and response of function
+
+def dashboard(request): #request = object conating info about HTTP request
     return render(request, 'tracker/dashboard.html')

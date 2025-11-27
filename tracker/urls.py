@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 
+#urls.py as address for routing
+
 app_name = 'tracker'
 
 urlpatterns = [
