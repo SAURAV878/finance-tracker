@@ -7,5 +7,6 @@ app_name = 'tracker'
 
 urlpatterns = [
     path('',  views.dashboard, name = 'dashboard'),
-    path('add/', views.add_transaction, name='add_transaction'), # New URL pattern
+    path('add/', views.add_transaction, name='add_transaction'),
+    path('transaction/<int:pk>/edit/', views.edit_transaction, name='edit_transaction'),
 ]

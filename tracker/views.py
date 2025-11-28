@@ -1,23 +1,23 @@
-from django.shortcuts import render, redirect # Import redirect
+from django.shortcuts import render, redirect, get_object_or_404 # Import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
-from .models import Transaction, Category # Import Category model
-from .forms import TransactionForm # Import our new form
+from .models import Transaction, Category
+from .forms import TransactionForm
 
 # Create your views here.
 @login_required
 def dashboard(request):
     transactions = Transaction.objects.filter(user=request.user)
-    total_income = transactions.filter(type = 'income').aggregate(Sum('amount')) ['amount__sum'] or 0
-    total_expense = transactions.filter(type = 'expense').aggregate(Sum('amount')) ['amount__sum'] or 0
+    total_income = transactions.filter(type='income').aggregate(Sum('amount'))['amount__sum'] or 0
+    total_expense = transactions.filter(type='expense').aggregate(Sum('amount'))['amount__sum'] or 0
 
     balance = total_income - total_expense
-    recent_transactions = transactions[:5]
+    recent_transactions = transactions.order_by('-date', '-created_at')[:5] # Ensure consistent ordering
 
     context = {
-        'total_income' : total_income,
-        'total_expense' : total_expense,
-        'balance' : balance,
+        'total_income': total_income,
+        'total_expense': total_expense,
+        'balance': balance,
         'recent_transactions': recent_transactions,
     }
     
@@ -31,11 +31,24 @@ def add_transaction(request):
             transaction = form.save(commit=False)
             transaction.user = request.user
             transaction.save()
-            return redirect('tracker:dashboard') # Redirect to the dashboard after saving
+            return redirect('tracker:dashboard')
     else:
-        form = TransactionForm(user=request.user) # Pass the user to filter categories
+        form = TransactionForm(user=request.user)
     
     return render(request, 'tracker/transaction_form.html', {'form': form, 'title': 'Add Transaction'})
+
+@login_required
+def edit_transaction(request, pk):
+    transaction = get_object_or_404(Transaction, pk=pk, user=request.user) # Fetch the object
+    if request.method == 'POST':
+        form = TransactionForm(request.POST, instance=transaction, user=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('tracker:dashboard')
+    else:
+        form = TransactionForm(instance=transaction, user=request.user)
+    
+    return render(request, 'tracker/transaction_form.html', {'form': form, 'title': 'Edit Transaction'})
 
 
 
