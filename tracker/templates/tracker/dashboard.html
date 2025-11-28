@@ -2,5 +2,50 @@
 
 {% block content %} 
 <h2>Dashboard</h2>
-<p>Welcome to your Finance tracker</p>
+
+<div class="summary">
+    <h3>Financial Summary</h3>
+
+    <div class="summary-item">
+        <p>Total Income:</p>
+        <p>${{ total_income }}</p>
+    </div>
+
+    <div class="summary-item">
+        <p>Total Expense:</p>
+        <p>${{ total_expense }}</p>
+    </div>
+
+    <div class="summary-item">
+        <p>Balance:</p>
+        <p>${{ balance }}</p>
+    </div>
+</div>
+
+<div class="recent-transactions">
+    <h3>Recent Transactions</h3>
+
+    {% if recent_transactions %} <!-- show table -->
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Description</th>
+            </tr>
+            {% for transaction in recent_transactions %} <!-- loop through each trans list-->
+            <tr>
+                <td>{{ transaction.date }}</td> <!--Acessing obj properties-->
+                <td>{{ transaction.type }}</td>
+                <td>{{ transaction.category }}</td>
+                <td>{{ transaction.amount }}</td>
+                <td>{{ transaction.description }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {%  else %}
+        <p>No transactions yet. Add your frist transaction!</p>
+    {% endif %}
+</div>
 {% endblock %}
