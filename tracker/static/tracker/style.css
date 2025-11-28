@@ -128,3 +128,20 @@ form + a { /* Targets the <a> tag immediately following a form */
 form + a:hover {
     text-decoration: underline;
 }
+
+/* Action Buttons in Tables */
+.btn-edit {
+    background-color: #ffc107; /* Warning yellow */
+    color: #212529;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.btn-edit:hover {
+    background-color: #e0a800;
+    color: #212529;
+    text-decoration: none;
+}
