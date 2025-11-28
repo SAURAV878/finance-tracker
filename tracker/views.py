@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required #decorators means a function that wraps another function
 from django.db.models import Sum
 from .models import Transaction
 
