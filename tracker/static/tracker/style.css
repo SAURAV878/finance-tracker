@@ -145,3 +145,19 @@ form + a:hover {
     color: #212529;
     text-decoration: none;
 }
+
+.btn-delete {
+    background-color: #dc3545; /* Danger red */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.btn-delete:hover {
+    background-color: #c82333;
+    color: white;
+    text-decoration: none;
+}

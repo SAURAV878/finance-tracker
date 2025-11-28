@@ -1,0 +1,20 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+  <h2>Confirm Deletion</h2>
+  <p>Are you sure you want to delete the following transaction?</p>
+  
+  <div class="transaction-details" style="background-color: #f8f9fa; border: 1px solid #dee2e6; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+    <p><strong>Type:</strong> {{ transaction.type|title }}</p>
+    <p><strong>Category:</strong> {{ transaction.category.name }}</p>
+    <p><strong>Amount:</strong> ${{ transaction.amount }}</p>
+    <p><strong>Date:</strong> {{ transaction.date }}</p>
+    <p><strong>Description:</strong> {{ transaction.description|default:"N/A" }}</p>
+  </div>
+
+  <form method="post" style="display: flex; align-items: center; gap: 10px;">
+    {% csrf_token %}
+    <button type="submit" class="btn-delete" style="background-color: #dc3545; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">Confirm Delete</button>
+    <a href="{% url 'tracker:dashboard' %}" class="btn-cancel" style="text-decoration: none; padding: 10px 15px; background-color: #6c757d; color: white; border-radius: 5px;">Cancel</a>
+  </form>
+{% endblock %}
