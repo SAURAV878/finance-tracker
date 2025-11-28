@@ -77,3 +77,54 @@ tr:hover {
 tr:last-child td {
     border-bottom: none;
 }
+/* Form Styling */
+form {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 20px auto; /* Center the form */
+}
+
+form p {
+    margin-bottom: 15px; /* Space between form fields rendered with as_p */
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+/* Style for the submit button */
+form button[type="submit"] {
+    background-color: #007bff; /* Primary blue color */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+form button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Style for the "Back to Dashboard" link */
+form + a { /* Targets the <a> tag immediately following a form */
+    display: inline-block;
+    margin-top: 15px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+form + a:hover {
+    text-decoration: underline;
+}
