@@ -6,5 +6,6 @@ from . import views
 app_name = 'tracker'
 
 urlpatterns = [
-    path('',  views.dashboard, name = 'dashboard',)
+    path('',  views.dashboard, name = 'dashboard'),
+    path('add/', views.add_transaction, name='add_transaction'), # New URL pattern
 ]
