@@ -1,0 +1,18 @@
+{% extends 'tracker/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <h1>Welcome to Finance Tracker</h1>
+    <p class="lead">Manage your income and expenses efficiently.</p>
+    
+    <div class="mt-4">
+        <a href="{% url 'login' %}" class="btn btn-primary btn-lg mx-2">Login</a> 
+        <a href="{% url 'tracker:register' %}" class="btn btn-success btn-lg mx-2">Register</a> {# Actual register URL #}
+    </div>
+
+    <div class="mt-5">
+        <img src="{% static 'tracker/finance_banner.png' %}" alt="Finance Tracker Banner" class="img-fluid" style="max-width: 600px;">
+    </div>
+</div>
+{% endblock %}

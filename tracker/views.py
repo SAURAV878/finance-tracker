@@ -3,7 +3,9 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from .models import Transaction, Category
-from .forms import TransactionForm, CategoryForm
+from .forms import TransactionForm, CategoryForm, UserRegisterForm # Import UserRegisterForm
+from django.contrib import messages # Import messages
+
 
 # Create your views here.
 @login_required
@@ -70,9 +72,7 @@ def category_add(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST, user=request.user)
         if form.is_valid():
-            category = form.save(commit=False)
-            category.user = request.user
-            category.save()
+            form.save() # User is now handled by the form
             return redirect('tracker:category_list')
     else:
         form = CategoryForm(user=request.user)
@@ -110,6 +110,18 @@ def category_delete(request, pk):
         return redirect('tracker:category_list')
     return render(request, 'tracker/category_confirm_delete.html', {'category': category, 'title': 'Delete Category'})
 
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Account created for {username}! You are now able to log in.')
+            return redirect('login') # Redirect to login page
+    else:
+        form = UserRegisterForm()
+    return render(request, 'tracker/register.html', {'form': form})
 
 
-
+def welcome_page(request):
+    return render(request, 'tracker/welcome.html')

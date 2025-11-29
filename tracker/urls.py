@@ -6,7 +6,9 @@ from . import views
 app_name = 'tracker'
 
 urlpatterns = [
-    path('',  views.dashboard, name = 'dashboard'),
+    path('',  views.welcome_page, name = 'welcome_page'), # New welcome page at root
+    path('dashboard/',  views.dashboard, name = 'dashboard'), # Dashboard moved to /dashboard/
+    path('register/', views.register, name='register'), # New register URL
     path('add/', views.add_transaction, name='add_transaction'),
     path('transaction/<int:pk>/edit/', views.edit_transaction, name='edit_transaction'),
     path('transaction/<int:pk>/delete/', views.delete_transaction, name='delete_transaction'),

@@ -103,7 +103,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
+# https://docs.djangoproject.com/en 5.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -129,4 +129,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
-LOGIN_URL = '/admin/'
+LOGIN_URL = '/accounts/login/' # Explicitly set the login URL
+LOGIN_REDIRECT_URL = 'tracker:dashboard'  # Redirect to dashboard after successful login
+LOGOUT_REDIRECT_URL = 'tracker:welcome_page' # Redirect to welcome page after logout
