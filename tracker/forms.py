@@ -40,3 +40,17 @@ class TransactionForm(forms.ModelForm):
                 if isinstance(field.widget, (forms.TextInput, forms.NumberInput, forms.Textarea, forms.Select)):
                     field.widget.attrs.update({'class': 'form-control'})
 
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name', 'type']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'type': forms.Select(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'name': 'Category Name',
+            'type': 'Category Type',
+        }
+
+

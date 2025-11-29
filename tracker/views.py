@@ -59,5 +59,44 @@ def delete_transaction(request, pk):
     
     return render(request, 'tracker/transaction_confirm_delete.html', {'transaction': transaction})
 
+@login_required
+def category_list(request):
+    categories = Category.objects.filter(user=request.user).order_by('name')
+    return render(request, 'tracker/category_list.html', {'categories': categories, 'title': 'Manage Categories'})
+
+@login_required
+def category_add(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save(commit=False)
+            category.user = request.user
+            category.save()
+            return redirect('tracker:category_list')
+    else:
+        form = CategoryForm()
+    return render(request, 'tracker/category_form.html', {'form': form, 'title': 'Add Category'})
+
+@login_required
+def category_edit(request, pk):
+    category = get_object_or_404(Category, pk=pk, user=request.user)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            return redirect('tracker:category_list')
+    else:
+        form = CategoryForm(instance=category)
+    return render(request, 'tracker/category_form.html', {'form': form, 'title': 'Edit Category'})
+
+@login_required
+def category_delete(request, pk):
+    category = get_object_or_404(Category, pk=pk, user=request.user)
+    if request.method == 'POST':
+        category.delete()
+        return redirect('tracker:category_list')
+    return render(request, 'tracker/category_confirm_delete.html', {'category': category, 'title': 'Delete Category'})
+
+
 
 
