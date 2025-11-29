@@ -4,8 +4,26 @@
 {% block content %}
 <h2>{{ title }}</h2>
 
-<form method="post">
+<form method="post" action="{{ action_url }}">
     {% csrf_token %}
+
+    {# Temporary debugging: Display form errors explicitly #}
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <strong>Please correct the following errors:</strong>
+            <ul>
+                {% for field in form %}
+                    {% if field.errors %}
+                        <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+                    {% endif %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error|striptags }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
     {% crispy form %}
     <button type="submit" class="btn btn-primary mt-3">Save Category</button>
 </form>
