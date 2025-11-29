@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404 # Import get_object_or_404
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from .models import Transaction, Category
-from .forms import TransactionForm
+from .forms import TransactionForm, CategoryForm
 
 # Create your views here.
 @login_required
@@ -67,27 +68,39 @@ def category_list(request):
 @login_required
 def category_add(request):
     if request.method == 'POST':
-        form = CategoryForm(request.POST)
+        form = CategoryForm(request.POST, user=request.user)
         if form.is_valid():
             category = form.save(commit=False)
             category.user = request.user
             category.save()
             return redirect('tracker:category_list')
     else:
-        form = CategoryForm()
-    return render(request, 'tracker/category_form.html', {'form': form, 'title': 'Add Category'})
+        form = CategoryForm(user=request.user)
+    
+    context = {
+        'form': form,
+        'title': 'Add Category',
+        'action_url': reverse('tracker:category_add')
+    }
+    return render(request, 'tracker/category_form.html', context)
 
 @login_required
 def category_edit(request, pk):
     category = get_object_or_404(Category, pk=pk, user=request.user)
     if request.method == 'POST':
-        form = CategoryForm(request.POST, instance=category)
+        form = CategoryForm(request.POST, instance=category, user=request.user)
         if form.is_valid():
             form.save()
             return redirect('tracker:category_list')
     else:
-        form = CategoryForm(instance=category)
-    return render(request, 'tracker/category_form.html', {'form': form, 'title': 'Edit Category'})
+        form = CategoryForm(instance=category, user=request.user)
+    
+    context = {
+        'form': form,
+        'title': 'Edit Category',
+        'action_url': reverse('tracker:category_edit', kwargs={'pk': pk})
+    }
+    return render(request, 'tracker/category_form.html', context)
 
 @login_required
 def category_delete(request, pk):

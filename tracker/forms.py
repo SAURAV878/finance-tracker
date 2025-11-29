@@ -53,4 +53,9 @@ class CategoryForm(forms.ModelForm):
             'type': 'Category Type',
         }
 
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None) # Store the user
+        super().__init__(*args, **kwargs)
+
+
 
