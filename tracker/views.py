@@ -1,11 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404 # Import get_object_or_404
 from django.urls import reverse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test # Import user_passes_test
 from django.db.models import Sum
 from .models import Transaction, Category
 from .forms import TransactionForm, CategoryForm, UserRegisterForm # Import UserRegisterForm
 from django.contrib import messages # Import messages
 
+
+# Helper function to check if user is superuser
+def is_superuser_check(user):
+    return user.is_superuser
 
 # Create your views here.
 @login_required
@@ -63,16 +67,20 @@ def delete_transaction(request, pk):
     return render(request, 'tracker/transaction_confirm_delete.html', {'transaction': transaction})
 
 @login_required
+@user_passes_test(is_superuser_check) # Protect this view
 def category_list(request):
     categories = Category.objects.filter(user=request.user).order_by('name')
     return render(request, 'tracker/category_list.html', {'categories': categories, 'title': 'Manage Categories'})
 
 @login_required
+@user_passes_test(is_superuser_check) # Protect this view
 def category_add(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST, user=request.user)
         if form.is_valid():
-            form.save() # User is now handled by the form
+            category = form.save(commit=False) # Commit=False to set user before saving
+            category.user = request.user       # Add back this line
+            category.save()
             return redirect('tracker:category_list')
     else:
         form = CategoryForm(user=request.user)
@@ -85,6 +93,7 @@ def category_add(request):
     return render(request, 'tracker/category_form.html', context)
 
 @login_required
+@user_passes_test(is_superuser_check) # Protect this view
 def category_edit(request, pk):
     category = get_object_or_404(Category, pk=pk, user=request.user)
     if request.method == 'POST':
@@ -103,6 +112,7 @@ def category_edit(request, pk):
     return render(request, 'tracker/category_form.html', context)
 
 @login_required
+@user_passes_test(is_superuser_check) # Protect this view
 def category_delete(request, pk):
     category = get_object_or_404(Category, pk=pk, user=request.user)
     if request.method == 'POST':

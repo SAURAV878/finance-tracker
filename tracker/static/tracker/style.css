@@ -161,3 +161,89 @@ form + a:hover {
     color: white;
     text-decoration: none;
 }
+
+/* Admin Navbar Styling */
+.admin-navbar {
+    background-color: #343a40 !important; /* Dark background */
+}
+
+.admin-navbar .navbar-brand,
+.admin-navbar .nav-link {
+    color: #ffffff !important; /* White text */
+}
+
+.admin-navbar .nav-link.btn {
+    border-color: #ffffff !important; /* White border for buttons */
+}
+
+.admin-navbar .nav-link.btn-outline-primary {
+    color: #ffffff !important;
+}
+
+.admin-navbar .nav-link.btn-outline-success {
+    color: #ffffff !important;
+}
+
+/* Welcome Page Hero Section */
+.hero-section {
+    background: linear-gradient(to right, #007bff, #0056b3); /* Blue gradient */
+    color: white;
+    padding: 60px 0; /* Reduced padding for tighter fit */
+    margin-top: -20px; /* Adjust if needed to remove space from top */
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+    display: flex; /* Use flexbox for better vertical alignment */
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    min-height: 80vh; /* Make hero section take up most of the viewport height */
+}
+
+.hero-section h1 {
+    color: white; /* Ensure heading is white */
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.hero-section .lead {
+    font-size: 1.5rem;
+    margin-bottom: 30px; /* Adjusted margin */
+}
+
+.hero-section img { /* Added specific styling for image within hero-section */
+    max-height: 300px;
+    width: auto; /* Maintain aspect ratio */
+    margin-bottom: 30px; /* Space between image and buttons */
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.hero-section .btn-group .btn {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border-radius: 30px;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+}
+
+.hero-section .btn-primary {
+    background-color: #ffc107; /* Yellow */
+    border-color: #ffc107;
+    color: #212529; /* Dark text */
+}
+
+.hero-section .btn-primary:hover {
+    background-color: #e0a800;
+    border-color: #e0a800;
+}
+
+.hero-section .btn-success {
+    background-color: #28a745; /* Green */
+    border-color: #28a745;
+}
+
+.hero-section .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}

@@ -23,44 +23,54 @@
         </div>
     {% endif %}
 
+    {% block title_heading %} {# New block for the main title heading #}
     <h1>Finance Tracker</h1>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    {% endblock title_heading %}
+
+    {% block navbar %} {# New block for the navigation bar #}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light {% if user.is_superuser %}admin-navbar{% endif %}">
         <div class="container-fluid">
             {# Always show the brand/title #}
             <a class="navbar-brand" href="{% url 'tracker:welcome_page' %}">Finance Tracker</a> 
             
             <div class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0"> {# Moved to right-aligned part #}
                     {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'tracker:dashboard' %}">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'tracker:category_list' %}">Manage Categories</a>
+                        {% if user.is_superuser %} {# Add this condition #}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'tracker:category_list' %}">Manage Categories</a>
+                            </li>
+                        {% endif %} {# Close the condition #}
+                        <li class="nav-item nav-link"> {# Display username and differentiate admin/user #}
+                            {% if user.is_superuser %}
+                                <strong>Admin:</strong> {{ user.username }}
+                            {% else %}
+                                Welcome, {{ user.username }}
+                            {% endif %}
                         </li>
-                    {% endif %}
-                </ul>
-
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0"> {# ms-auto for right alignment #}
-                    {% if user.is_authenticated %}
                         <li class="nav-item">
-                            {# Logout URL #}
-                            <a class="nav-link btn btn-outline-danger btn-sm" href="{% url 'logout' %}">Logout</a> 
+                            {# Logout button as a form #}
+                            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="nav-link btn btn-danger">Logout</button> 
+                            </form>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            {# Login URL #}
-                            <a class="nav-link btn btn-outline-primary btn-sm mx-1" href="{% url 'login' %}">Login</a> 
+                            <a class="nav-link btn btn-outline-primary mx-1" href="{% url 'login' %}">Login</a> 
                         </li>
                         <li class="nav-item">
-                            {# Register URL #}
-                            <a class="nav-link btn btn-outline-success btn-sm mx-1" href="{% url 'tracker:register' %}">Register</a> 
+                            <a class="nav-link btn btn-outline-success mx-1" href="{% url 'tracker:register' %}">Register</a> 
                         </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
+    {% endblock navbar %}
 
 
     {% block content %} <!-- placeholder for other pages to fill in  --> 
