@@ -1,18 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404 # Import get_object_or_404
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required, user_passes_test # Import user_passes_test
+from django.urls import reverse# Import user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from .models import Transaction, Category
 from .forms import TransactionForm, CategoryForm, UserRegisterForm # Import UserRegisterForm
 from django.contrib import messages # Import messages
 
 
-# Helper function to check if user is superuser
-def is_superuser_check(user):
-    return user.is_superuser
+
 
 # Create your views here.
-@login_required
+
 def dashboard(request):
     transactions = Transaction.objects.filter(user=request.user)
     total_income = transactions.filter(type='income').aggregate(Sum('amount'))['amount__sum'] or 0
@@ -30,7 +28,6 @@ def dashboard(request):
     
     return render(request, 'tracker/dashboard.html', context)
 
-@login_required
 def add_transaction(request):
     if request.method == 'POST':
         form = TransactionForm(request.POST, user=request.user)
@@ -44,7 +41,6 @@ def add_transaction(request):
     
     return render(request, 'tracker/transaction_form.html', {'form': form, 'title': 'Add Transaction'})
 
-@login_required
 def edit_transaction(request, pk):
     transaction = get_object_or_404(Transaction, pk=pk, user=request.user)
     if request.method == 'POST':
@@ -57,7 +53,7 @@ def edit_transaction(request, pk):
     
     return render(request, 'tracker/transaction_form.html', {'form': form, 'title': 'Edit Transaction'})
 
-@login_required
+
 def delete_transaction(request, pk):
     transaction = get_object_or_404(Transaction, pk=pk, user=request.user)
     if request.method == 'POST':
@@ -65,15 +61,12 @@ def delete_transaction(request, pk):
         return redirect('tracker:dashboard')
     
     return render(request, 'tracker/transaction_confirm_delete.html', {'transaction': transaction})
-
 @login_required
-@user_passes_test(is_superuser_check) # Protect this view
 def category_list(request):
     categories = Category.objects.filter(user=request.user).order_by('name')
     return render(request, 'tracker/category_list.html', {'categories': categories, 'title': 'Manage Categories'})
 
 @login_required
-@user_passes_test(is_superuser_check) # Protect this view
 def category_add(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST, user=request.user)
@@ -91,9 +84,7 @@ def category_add(request):
         'action_url': reverse('tracker:category_add')
     }
     return render(request, 'tracker/category_form.html', context)
-
 @login_required
-@user_passes_test(is_superuser_check) # Protect this view
 def category_edit(request, pk):
     category = get_object_or_404(Category, pk=pk, user=request.user)
     if request.method == 'POST':
@@ -110,9 +101,7 @@ def category_edit(request, pk):
         'action_url': reverse('tracker:category_edit', kwargs={'pk': pk})
     }
     return render(request, 'tracker/category_form.html', context)
-
 @login_required
-@user_passes_test(is_superuser_check) # Protect this view
 def category_delete(request, pk):
     category = get_object_or_404(Category, pk=pk, user=request.user)
     if request.method == 'POST':

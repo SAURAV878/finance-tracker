@@ -39,11 +39,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'tracker:dashboard' %}">Home</a>
                         </li>
-                        {% if user.is_superuser %} {# Add this condition #}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'tracker:category_list' %}">Manage Categories</a>
-                            </li>
-                        {% endif %} {# Close the condition #}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tracker:category_list' %}">Manage Categories</a>
+                        </li>
                         <li class="nav-item nav-link"> {# Display username and differentiate admin/user #}
                             {% if user.is_superuser %}
                                 <strong>Admin:</strong> {{ user.username }}
