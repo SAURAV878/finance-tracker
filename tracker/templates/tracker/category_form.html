@@ -4,7 +4,7 @@
 {% block content %}
 <h2>{{ title }}</h2>
 
-<form method="post" action="{{ action_url }}">
+<form method="post" action="{{ action_url }}" novalidate>
     {% csrf_token %}
 
     {# Temporary debugging: Display form errors explicitly #}

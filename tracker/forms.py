@@ -56,8 +56,26 @@ class CategoryForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None) # Store the user, no user field filtering here
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
+        if user:
+            self.instance.user = user
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+        type = cleaned_data.get('type')
+        user = self.instance.user
+
+        if name and type and user:
+            # Check for uniqueness, excluding the current instance if it exists
+            queryset = Category.objects.filter(user=user, name=name, type=type)
+            if self.instance.pk:
+                queryset = queryset.exclude(pk=self.instance.pk)
+            if queryset.exists():
+                raise forms.ValidationError('A category with this name and type already exists.')
+        
+        return cleaned_data
 
 
 class UserRegisterForm(UserCreationForm):
