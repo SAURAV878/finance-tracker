@@ -48,36 +48,37 @@ class TransactionForm(forms.ModelForm):
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ['name', 'type', 'user']
+        # Do not expose the `user` field in the form; views will assign it.
+        fields = ['name', 'type']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control'}),
-            'user': forms.Select(attrs={'class': 'form-control'}),
         }
         labels = {
             'name': 'Category Name',
             'type': 'Category Type',
-            'user': 'User (optional)',
         }
 
     def __init__(self, *args, **kwargs):
+        # Accept an optional `user` kwarg so the form can validate uniqueness
+        # for that user before saving.
+        self._user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        self.fields['user'].required = False
 
     def clean(self):
         cleaned_data = super().clean()
         name = cleaned_data.get('name')
         type = cleaned_data.get('type')
-        user = cleaned_data.get('user')
+        user = self._user
 
         if name and type:
-            # Check for uniqueness, excluding the current instance if it exists
+            # Check for uniqueness for the given user (None allowed for global)
             queryset = Category.objects.filter(user=user, name=name, type=type)
             if self.instance.pk:
                 queryset = queryset.exclude(pk=self.instance.pk)
             if queryset.exists():
                 raise forms.ValidationError('A category with this name and type already exists for the selected user.')
-        
+
         return cleaned_data
 
 

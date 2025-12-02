@@ -61,9 +61,6 @@ def delete_transaction(request, pk):
         return redirect('tracker:dashboard')
     
     return render(request, 'tracker/transaction_confirm_delete.html', {'transaction': transaction})
-from django.contrib.auth.decorators import login_required, user_passes_test
-
-@login_required
 def category_list(request):
     if request.user.is_staff:
         categories = Category.objects.all().order_by('name')
@@ -71,17 +68,19 @@ def category_list(request):
         categories = Category.objects.filter(user=request.user).order_by('name')
     return render(request, 'tracker/category_list.html', {'categories': categories, 'title': 'Manage Categories'})
 
-@user_passes_test(lambda u: u.is_staff)
+@login_required
 def category_add(request):
     if request.method == 'POST':
-        form = CategoryForm(request.POST)
+        form = CategoryForm(request.POST, user=request.user)
         if form.is_valid():
-            form.save()
+            category = form.save(commit=False)
+            category.user = request.user
+            category.save()
             messages.success(request, 'Category added successfully!')
             return redirect('tracker:category_list')
     else:
-        form = CategoryForm()
-    
+        form = CategoryForm(user=request.user)
+
     context = {
         'form': form,
         'title': 'Add Category',
@@ -89,18 +88,26 @@ def category_add(request):
     }
     return render(request, 'tracker/category_form.html', context)
 
-@user_passes_test(lambda u: u.is_staff)
+@login_required
 def category_edit(request, pk):
     category = get_object_or_404(Category, pk=pk)
+    # Only the owner or staff can edit
+    if not (request.user.is_staff or category.user == request.user):
+        messages.error(request, 'You do not have permission to edit this category.')
+        return redirect('tracker:category_list')
+
     if request.method == 'POST':
-        form = CategoryForm(request.POST, instance=category)
+        form = CategoryForm(request.POST, instance=category, user=request.user)
         if form.is_valid():
-            form.save()
+            updated = form.save(commit=False)
+            # Preserve owner (don't change owner via form)
+            updated.user = category.user or request.user
+            updated.save()
             messages.success(request, 'Category updated successfully!')
             return redirect('tracker:category_list')
     else:
-        form = CategoryForm(instance=category)
-    
+        form = CategoryForm(instance=category, user=request.user)
+
     context = {
         'form': form,
         'title': 'Edit Category',
@@ -108,9 +115,14 @@ def category_edit(request, pk):
     }
     return render(request, 'tracker/category_form.html', context)
 
-@user_passes_test(lambda u: u.is_staff)
+@login_required
 def category_delete(request, pk):
     category = get_object_or_404(Category, pk=pk)
+    # Only the owner or staff can delete
+    if not (request.user.is_staff or category.user == request.user):
+        messages.error(request, 'You do not have permission to delete this category.')
+        return redirect('tracker:category_list')
+
     if request.method == 'POST':
         category.delete()
         return redirect('tracker:category_list')
