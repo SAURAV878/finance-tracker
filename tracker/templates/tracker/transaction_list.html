@@ -1,0 +1,30 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Transactions{% endblock %}
+
+{% block content %}
+    <h1>Transaction List</h1>
+    <a href="{% url 'add_transaction' %}" class="btn btn-primary mb-3">Add Transaction</a>
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Category</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.date }}</td>
+                <td>{{ transaction.description }}</td>
+                <td>{{ transaction.get_type_display }}</td>
+                <td>{{ transaction.category|default:"N/A" }}</td>
+                <td>{{ transaction.amount }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
