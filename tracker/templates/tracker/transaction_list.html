@@ -13,6 +13,7 @@
                 <th>Type</th>
                 <th>Category</th>
                 <th>Amount</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -23,6 +24,10 @@
                 <td>{{ transaction.get_type_display }}</td>
                 <td>{{ transaction.category|default:"N/A" }}</td>
                 <td>{{ transaction.amount }}</td>
+                <td>
+                    <a href="{% url 'edit_transaction' transaction.pk %}" class="btn btn-sm btn-info">Edit</a>
+                    <a href="{% url 'delete_transaction' transaction.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

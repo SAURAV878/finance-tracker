@@ -1,0 +1,15 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Summary{% endblock %}
+
+{% block content %}
+    <h1>Financial Summary</h1>
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Overview</h5>
+            <p class="card-text">Total Income: ${{ total_income|floatformat:2 }}</p>
+            <p class="card-text">Total Expenses: ${{ total_expense|floatformat:2 }}</p>
+            <h5 class="card-title mt-3">Balance: ${{ balance|floatformat:2 }}</h5>
+        </div>
+    </div>
+{% endblock %}

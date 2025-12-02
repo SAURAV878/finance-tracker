@@ -1,11 +1,14 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User # Import User model
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True) # Add user field
 
     class Meta:
         verbose_name_plural = "Categories"
+        unique_together = ('name', 'user') # Ensure unique categories per user
 
     def __str__(self):
         return self.name
@@ -16,6 +19,7 @@ class Transaction(models.Model):
         ('expense', 'Expense'),
     )
 
+    user = models.ForeignKey(User, on_delete=models.CASCADE) # Add user field
     date = models.DateField(default=timezone.now)
     description = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
