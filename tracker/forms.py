@@ -1,4 +1,5 @@
 from django import forms
+from django.db.models import Q
 from django.contrib.auth.models import User # Import User model
 from django.contrib.auth.forms import UserCreationForm # Import UserCreationForm
 from .models import Transaction, Category
@@ -34,7 +35,9 @@ class TransactionForm(forms.ModelForm):
 
         # Filter categories based on the user
         if user:
-            self.fields['category'].queryset = Category.objects.filter(user=user).order_by('name')
+            self.fields['category'].queryset = Category.objects.filter(
+                Q(user=user) | Q(user__isnull=True)
+            ).order_by('name')
 
         # Add Bootstrap-like classes for basic styling to other fields
         for field_name, field in self.fields.items():
@@ -45,35 +48,35 @@ class TransactionForm(forms.ModelForm):
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
-        fields = ['name', 'type'] # Reverted to not include 'user'
+        fields = ['name', 'type', 'user']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control'}),
+            'user': forms.Select(attrs={'class': 'form-control'}),
         }
         labels = {
             'name': 'Category Name',
             'type': 'Category Type',
+            'user': 'User (optional)',
         }
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        if user:
-            self.instance.user = user
+        self.fields['user'].required = False
 
     def clean(self):
         cleaned_data = super().clean()
         name = cleaned_data.get('name')
         type = cleaned_data.get('type')
-        user = self.instance.user
+        user = cleaned_data.get('user')
 
-        if name and type and user:
+        if name and type:
             # Check for uniqueness, excluding the current instance if it exists
             queryset = Category.objects.filter(user=user, name=name, type=type)
             if self.instance.pk:
                 queryset = queryset.exclude(pk=self.instance.pk)
             if queryset.exists():
-                raise forms.ValidationError('A category with this name and type already exists.')
+                raise forms.ValidationError('A category with this name and type already exists for the selected user.')
         
         return cleaned_data
 

@@ -61,22 +61,26 @@ def delete_transaction(request, pk):
         return redirect('tracker:dashboard')
     
     return render(request, 'tracker/transaction_confirm_delete.html', {'transaction': transaction})
-@login_required
-def category_list(request):
-    categories = Category.objects.filter(user=request.user).order_by('name')
-    return render(request, 'tracker/category_list.html', {'categories': categories, 'title': 'Manage Categories'})
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 @login_required
+def category_list(request):
+    if request.user.is_staff:
+        categories = Category.objects.all().order_by('name')
+    else:
+        categories = Category.objects.filter(user=request.user).order_by('name')
+    return render(request, 'tracker/category_list.html', {'categories': categories, 'title': 'Manage Categories'})
+
+@user_passes_test(lambda u: u.is_staff)
 def category_add(request):
     if request.method == 'POST':
-        form = CategoryForm(request.POST, user=request.user)
+        form = CategoryForm(request.POST)
         if form.is_valid():
-            category = form.save(commit=False) # Commit=False to set user before saving
-            category.user = request.user       # Add back this line
-            category.save()
+            form.save()
+            messages.success(request, 'Category added successfully!')
             return redirect('tracker:category_list')
     else:
-        form = CategoryForm(user=request.user)
+        form = CategoryForm()
     
     context = {
         'form': form,
@@ -84,16 +88,18 @@ def category_add(request):
         'action_url': reverse('tracker:category_add')
     }
     return render(request, 'tracker/category_form.html', context)
-@login_required
+
+@user_passes_test(lambda u: u.is_staff)
 def category_edit(request, pk):
-    category = get_object_or_404(Category, pk=pk, user=request.user)
+    category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
-        form = CategoryForm(request.POST, instance=category, user=request.user)
+        form = CategoryForm(request.POST, instance=category)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Category updated successfully!')
             return redirect('tracker:category_list')
     else:
-        form = CategoryForm(instance=category, user=request.user)
+        form = CategoryForm(instance=category)
     
     context = {
         'form': form,
@@ -101,9 +107,10 @@ def category_edit(request, pk):
         'action_url': reverse('tracker:category_edit', kwargs={'pk': pk})
     }
     return render(request, 'tracker/category_form.html', context)
-@login_required
+
+@user_passes_test(lambda u: u.is_staff)
 def category_delete(request, pk):
-    category = get_object_or_404(Category, pk=pk, user=request.user)
+    category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
         category.delete()
         return redirect('tracker:category_list')
