@@ -12,7 +12,7 @@ class Category(models.Model):
 
     type = models.CharField(max_length=10, choices=CATEGORY_TYPES)
     name = models.CharField(max_length=100)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
