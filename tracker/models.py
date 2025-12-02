@@ -19,7 +19,7 @@ class Transaction(models.Model):
         ('expense', 'Expense'),
     )
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE) # Add user field
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True) # Changed here
     date = models.DateField(default=timezone.now)
     description = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
